@@ -37,10 +37,13 @@ flowchart LR
 A{{ROS2 msg}} -- DDS --> B(Zenoh Bridge DDS) -- Zenoh --> C{{Zenoh msg}}
 ```
 
-
 There're four pathways to transfer the raw LiDAR packets to the endpoint Frame rate counter.
 
 * P1: the default way used in ROS2, passing messages with DDS
 * P2: using two Zenoh/DDS bridges to cross the local network
 * P3: directly using the zenoh message after Zenoh/DDS bridge
 * P4: replacing the last message passing by pure zenoh protocol
+
+## Data
+
+![NAME](./pic/demo.gif)
