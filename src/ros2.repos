@@ -11,3 +11,7 @@ repositories:
     type: git
     url: https://github.com/ros-drivers/velodyne
     version: ros2
+  zenoh-c:
+    type: git
+    url: https://github.com/eclipse-zenoh/zenoh-c
+    version: master
