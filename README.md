@@ -45,9 +45,6 @@ There're four pathways to transfer the raw LiDAR packets to the endpoint Frame r
 * P3: directly using the zenoh message after Zenoh/DDS bridge
 * P4: replacing the last message passing by pure zenoh protocol
 
-## Data
-
-![NAME](./pic/demo.gif)
 
 ## Usage
 
@@ -74,6 +71,19 @@ colcon build
 source ./install/setup.zsh
 ros2 launch transfer ros_pub.py
 ```
+
+## Sample Data
+
+![NAME](./pic/demo.gif)
+
+```bash
+wget https://github.com/YuanYuYuan/ros2-dds-zenoh-comparison/releases/download/2022-12-15/sample-data.tar.xz
+tar xvf sample-data.tar.xz
+ros2 bag play ./sample-data/rosbag2_2022_12_09-21_10_35_0.db3
+ros2 launch velodyne_pointcloud velodyne_transform_node-VLP32C-launch.py
+rviz2 -f velodyne
+```
+
 
 ## Tips
 
