@@ -55,8 +55,31 @@ There're four pathways to transfer the raw LiDAR packets to the endpoint Frame r
 
 Make sure you have [ROS2 humble](https://docs.ros.org/en/humble/Installation.html) installed on your system.
 
+### Download ROS dependencies
+
+```bash
+vcs import --input src/ros2.repos src
+```
+
 ### Build
 
 ```bash
+source /opt/ros/humble/setup.zsh
 colcon build
+```
+
+### Run
+
+```bash
+source ./install/setup.zsh
+ros2 launch transfer ros_pub.py
+```
+
+## Tips
+
+Setup ccls via cmake _compile_commands.json_.
+
+```bash
+colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ln -s ./build/compile_commands.json .
 ```
