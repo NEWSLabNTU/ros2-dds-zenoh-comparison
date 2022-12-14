@@ -1,0 +1,5 @@
+install/
+build/
+log/
+_*
+.ccls-cache/
