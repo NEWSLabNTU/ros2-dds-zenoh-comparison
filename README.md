@@ -4,19 +4,20 @@
 
 
 ```mermaid
-flowchart LR
-VL(Velodyne LiDAR)
-VD(velodyne_driver)
-VL --> VD
-subgraph VP[velodyne_pointcloud]
+flowchart TB
+subgraph SR[LiDAR Source]
     direction LR
-    T(transform)
+    VL(Velodyne LiDAR)
+    VD(velodyne_driver)
+    VP(velodyne_pointcloud)
+    VL --> VD --> VP
+end
+VP --> TF
+subgraph TF[Transfer]
+    direction LR
     RP(ROS2 publisher)
     ZP(Zenoh publisher)
-    T --> RP
-    T --> ZP
 end
-VD  --> T
 subgraph FRC[Frame Rate Counter]
     direction TB
     RS(ROS2 subscriber)
@@ -47,3 +48,15 @@ There're four pathways to transfer the raw LiDAR packets to the endpoint Frame r
 ## Data
 
 ![NAME](./pic/demo.gif)
+
+## Usage
+
+### Prerequisites
+
+Make sure you have [ROS2 humble](https://docs.ros.org/en/humble/Installation.html) installed on your system.
+
+### Build
+
+```bash
+colcon build
+```
