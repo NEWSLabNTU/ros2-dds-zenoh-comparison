@@ -1,0 +1,11 @@
+[submodule "src/velodyne"]
+    path = src/velodyne
+    url = https://github.com/ros-drivers/velodyne
+    branch = ros2
+[submodule "src/angles"]
+    path = src/angles
+    url = https://github.com/ros/angles
+[submodule "src/diagnostics"]
+    path = src/diagnostics
+    url = git@github.com:YuanYuYuan/diagnostics.git
+    branch = fix-package-format
