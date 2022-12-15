@@ -65,22 +65,24 @@ source /opt/ros/humble/setup.zsh
 colcon build
 ```
 
-### Run
 
-```bash
-source ./install/setup.zsh
-ros2 launch transfer ros_pub.py
-```
-
-## Sample Data
+### Prepare sample data
 
 ![NAME](./pic/demo.gif)
 
 ```bash
 wget https://github.com/YuanYuYuan/ros2-dds-zenoh-comparison/releases/download/2022-12-15/sample-data.tar.xz
 tar xvf sample-data.tar.xz
-ros2 bag play ./sample-data/rosbag2_2022_12_09-21_10_35_0.db3
+```
+
+### Run
+
+```bash
+source ./env.sh
+ros2 bag play sample-data/rosbag2_2022_12_09-21_10_35_0.db3 --loop -r 1
 ros2 launch velodyne_pointcloud velodyne_transform_node-VLP32C-launch.py
+ros2 launch comparison zenoh_pub.py
+ros2 launch comparison zenoh_sub.py
 rviz2 -f velodyne
 ```
 

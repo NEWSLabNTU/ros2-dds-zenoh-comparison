@@ -1,4 +1,4 @@
-/Transfer:
+/Comparison:
   ros__parameters:
     qos_overrides:
       /parameter_events:
@@ -8,5 +8,5 @@
           history: keep_last
           reliability: reliable
     use_sim_time: false
-    pub_topic: my_pub_topic
+    pub_topic: transfer_topic
     sub_topic: velodyne_points

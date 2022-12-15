@@ -5,12 +5,12 @@ import os
 
 def generate_launch_description():
     param_file = os.path.join(
-        get_package_share_directory('transfer'),
+        get_package_share_directory('comparison'),
         'config/zenoh_pub.yaml'
     )
     return LaunchDescription([
         Node(
-            package='transfer',
+            package='comparison',
             executable='zenoh_pub',
             output='screen',
             emulate_tty=True,
