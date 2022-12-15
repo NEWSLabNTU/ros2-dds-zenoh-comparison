@@ -3,8 +3,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <zenohc/zenoh.h>
-#include <string.h>
-
 #include "rclcpp/serialization.hpp"
 
 
@@ -45,9 +43,6 @@ private:
     z_owned_session_t s = z_open(z_move(config));
     z_owned_publisher_t pub;
     rclcpp::Serialization<PC2> serializer; 
-    
-    
-    
 };
 
 int main(int argc, char ** argv) {
