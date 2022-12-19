@@ -47,16 +47,17 @@ public:
                 serialized_msg.size(),
                 &options
             );
-            RCLCPP_INFO(
-                LOGGER,
-                "Received message, %d x %d",
-                msg->width,
-                msg->height
-            );
+            // RCLCPP_INFO(
+            //     LOGGER,
+            //     "Received message, %d x %d",
+            //     msg->width,
+            //     msg->height
+            // );
         };
 
         // ros sub with zenoh pub as callback
-        sub = this->create_subscription<PC2>(sub_topic, 10, callback);
+        auto qos = rclcpp::QoS(rclcpp::KeepAll()).reliable();
+        sub = this->create_subscription<PC2>(sub_topic, qos, callback);
     }
 
 private:
