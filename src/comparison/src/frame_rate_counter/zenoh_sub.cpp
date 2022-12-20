@@ -35,11 +35,13 @@ public:
 
         // declare zenoh sub
         z_owned_closure_sample_t callback = z_closure(data_handler, NULL, this);
+        z_subscriber_options_t opts = z_subscriber_options_default();
+        opts.reliability = Z_RELIABILITY_RELIABLE;
         this->sub = z_declare_subscriber(
             z_loan(session),
             z_keyexpr(sub_topic.c_str()),
             z_move(callback),
-            NULL
+            &opts
         );
 
         if (!z_check(sub)) {
