@@ -5,7 +5,7 @@ repositories:
     version: ros2
   diagnostics:
     type: git
-    url: git@github.com:YuanYuYuan/diagnostics.git
+    url: https://github.com/YuanYuYuan/diagnostics.git
     version: fix-package-format
   velodyne:
     type: git
