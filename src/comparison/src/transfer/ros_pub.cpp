@@ -14,10 +14,11 @@ public:
     Transfer() : Node(NODE_NAME) {
         std::string sub_topic = this->declare_parameter("sub_topic", "velodyne_points");
         std::string pub_topic = this->declare_parameter("pub_topic", "transfer_topic");
-        pub = this->create_publisher<PC2>(pub_topic, 10);
-        sub = this->create_subscription<PC2>(
+        auto qos = rclcpp::QoS(rclcpp::KeepAll()).reliable();
+        this->pub = this->create_publisher<PC2>(pub_topic, qos);
+        this->sub = this->create_subscription<PC2>(
             sub_topic,
-            10,
+            qos,
             std::bind(&Transfer::callback, this, std::placeholders::_1)
         );
     }
@@ -31,15 +32,15 @@ private:
         serializer.serialize_message(msg.get(), &serialized_msg);
 
         // publish the serialized_msg
-        pub->publish(serialized_msg);
+        this->pub->publish(serialized_msg);
         // pub->publish(*msg);
 
-        RCLCPP_INFO(
-            LOGGER,
-            "Received message, %d x %d",
-            msg->width,
-            msg->height
-        );
+        // RCLCPP_INFO(
+        //     LOGGER,
+        //     "Received message, %d x %d",
+        //     msg->width,
+        //     msg->height
+        // );
     }
     rclcpp::Subscription<PC2>::SharedPtr sub;
     rclcpp::Publisher<PC2>::SharedPtr pub;

@@ -24,11 +24,11 @@ subgraph FRC[Frame Rate Counter]
     ZS(Zenoh subscriber)
 end
 RP -- P1 --> RS
-ZP -- P4 --> ZS
+ZP -- P2 --> ZS
 ZBD1(Zenoh Bridge DDS)
 ZBD2(Zenoh Bridge DDS)
-RP --> ZBD1 --> ZBD2 -- P2 --> RS
-ZBD1 -- P3 --> ZS
+RP --> ZBD1 --> ZBD2 -- P3 --> RS
+ZBD1 -- P4 --> ZS
 ```
 
 Here's a simple visualizaton of the mechanism of [zenoh-bridge-dds](https://github.com/eclipse-zenoh/zenoh-plugin-dds).
@@ -41,9 +41,9 @@ A{{ROS2 msg}} -- DDS --> B(Zenoh Bridge DDS) -- Zenoh --> C{{Zenoh msg}}
 There're four pathways to transfer the raw LiDAR packets to the endpoint Frame rate counter.
 
 * P1: the default way used in ROS2, passing messages with DDS
-* P2: using two Zenoh/DDS bridges to cross the local network
-* P3: directly using the zenoh message after Zenoh/DDS bridge
-* P4: replacing the last message passing by pure zenoh protocol
+* P2: replacing the last message passing by pure zenoh protocol
+* P3: using two Zenoh/DDS bridges to cross the local network
+* P4: directly using the zenoh message after Zenoh/DDS bridge
 
 
 ## Usage
@@ -95,3 +95,34 @@ Setup ccls via cmake _compile_commands.json_.
 colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 ln -s ./build/compile_commands.json .
 ```
+
+## Experiments
+
+For autonomous vehicles driving on the road, there is one case of single LiDAR source followed
+by multiple perception and then gather into the planning node to make decision.
+
+```mermaid
+flowchart LR
+SR[LiDAR Sensor]
+P1[Perception Model 1]
+P2[Perception Model 2]
+PN[Perception Model N]
+PL[Planning Node]
+SR ---> P1 --> PL
+SR ---> P2 --> PL
+SR ---> PN --> PL
+```
+
+We can simulate this case by duplicating the middle **Transfer** node.
+The following script can be used to compare the performance between the paths P1 and P2.
+```bash
+./scripts/compare.sh
+```
+
+Visualize the results
+```bash
+python ./scripts/plot.py
+```
+
+
+![](./pic/compare-P1-P2.png)

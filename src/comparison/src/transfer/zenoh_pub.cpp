@@ -25,7 +25,13 @@ public:
         }
 
         // declare zenoh pub
-        pub = z_declare_publisher(z_loan(session), z_keyexpr(pub_topic.c_str()), NULL);
+        z_publisher_options_t opts = z_publisher_options_default();
+        opts.congestion_control = Z_CONGESTION_CONTROL_BLOCK;
+        pub = z_declare_publisher(
+            z_loan(session),
+            z_keyexpr(pub_topic.c_str()),
+            &opts
+        );
         if (!z_check(pub)) {
             printf("Unable to declare Publisher for key expression!\n");
             exit(-1);
@@ -47,16 +53,17 @@ public:
                 serialized_msg.size(),
                 &options
             );
-            RCLCPP_INFO(
-                LOGGER,
-                "Received message, %d x %d",
-                msg->width,
-                msg->height
-            );
+            // RCLCPP_INFO(
+            //     LOGGER,
+            //     "Received message, %d x %d",
+            //     msg->width,
+            //     msg->height
+            // );
         };
 
         // ros sub with zenoh pub as callback
-        sub = this->create_subscription<PC2>(sub_topic, 10, callback);
+        auto qos = rclcpp::QoS(rclcpp::KeepAll()).reliable();
+        sub = this->create_subscription<PC2>(sub_topic, qos, callback);
     }
 
 private:
