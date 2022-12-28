@@ -3,7 +3,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <rclcpp/serialization.hpp>
-#include <zenohc/zenoh.h>
+#include "zenoh.h"
 #include <chrono>
 #include <thread>
 
