@@ -4,7 +4,12 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <rclcpp/serialization.hpp>
 #include <zenohc/zenoh.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <string>
 
+
+pid_t pid;
 static const std::string NODE_NAME = "zenoh_pub";
 static const rclcpp::Logger LOGGER = rclcpp::get_logger(NODE_NAME);
 
@@ -38,11 +43,24 @@ public:
         }
 
         auto callback = [&](const PC2::UniquePtr msg) {
+            /* add msg from pub */
+            char *pub_data; 
+            char pid_c[10]; sprintf(pid_c, "%d", pid);
+            int pid_len = strlen(pid_c);
+           
             // serialize message
             auto message_payload_length = static_cast<size_t>(msg->data.size());
             rclcpp::SerializedMessage serialized_msg;
-            serialized_msg.reserve(message_header_length + message_payload_length);
-            serializer.serialize_message(msg.get(), &serialized_msg);
+            serialized_msg.reserve(message_header_length + pid_len + message_payload_length);
+            auto temp = msg.get();
+            memcpy(temp + message_payload_length, pid_c, pid_len);
+            serializer.serialize_message(temp, &serialized_msg);
+
+            // // serialize message
+            // auto message_payload_length = static_cast<size_t>(msg->data.size());
+            // rclcpp::SerializedMessage serialized_msg;
+            // serialized_msg.reserve(message_header_length + message_payload_length);
+            // serializer.serialize_message(msg.get(), &serialized_msg);
 
             // std::string value = "Test from zenoh";
             z_publisher_put_options_t options = z_publisher_put_options_default();
@@ -75,6 +93,7 @@ private:
 };
 
 int main(int argc, char ** argv) {
+    pid = getpid();
     rclcpp::init(argc, argv);
     rclcpp::spin(std::make_shared<Transfer>());
     rclcpp::shutdown();
