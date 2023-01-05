@@ -46,27 +46,26 @@ There're four pathways to transfer the raw LiDAR packets to the endpoint Frame r
 * P4: directly using the zenoh message after Zenoh/DDS bridge
 
 
-## Usage
+## Prerequisites
 
-### Prerequisites
+1. ROS2 Humble
 
 Make sure you have [ROS2 humble](https://docs.ros.org/en/humble/Installation.html) installed on your system.
 
-### Download ROS dependencies
-
+2. Download ROS dependencies
 ```bash
 vcs import --input src/ros2.repos src
 ```
 
-### Build
+3. Build ROS packages
 
 ```bash
-source /opt/ros/humble/setup.zsh
+source /opt/ros/humble/setup.bash
 colcon build
 ```
 
 
-### Prepare sample data
+4. Download the sample data
 
 ![NAME](./pic/demo.gif)
 
@@ -75,10 +74,17 @@ wget https://github.com/YuanYuYuan/ros2-dds-zenoh-comparison/releases/download/2
 tar xvf sample-data.tar.xz
 ```
 
-### Run
+5. (Optional) build zenoh router if needed
+```
+git clone https://github.com/eclipse-zenoh/zenoh
+cd zenoh
+cargo build --release --bin zenohd
+```
+
+## Usage
 
 ```bash
-source ./env.sh
+source ./env.bash
 ros2 bag play sample-data/rosbag2_2022_12_09-21_10_35_0.db3 --loop -r 1
 ros2 launch velodyne_pointcloud velodyne_transform_node-VLP32C-launch.py
 ros2 launch comparison zenoh_pub.py
