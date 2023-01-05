@@ -5,7 +5,7 @@
 
 Please check [here](../READMD.md)
 
-## Direct communication without UDP multicast
+## Direct communication
 
 ```mermaid
 flowchart LR
