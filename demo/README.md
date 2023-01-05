@@ -3,7 +3,7 @@
 
 ## Prerequisites
 
-Please check [here](../READMD.md)
+Please check [here](../README.md)
 
 ## Direct communication
 
