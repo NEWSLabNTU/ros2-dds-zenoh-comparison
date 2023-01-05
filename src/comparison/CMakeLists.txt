@@ -9,34 +9,21 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(zenohc REQUIRED)
+find_package(zenohcpp REQUIRED)
 
 add_executable(ros_pub src/transfer/ros_pub.cpp)
 add_executable(zenoh_pub src/transfer/zenoh_pub.cpp)
 add_executable(ros_sub src/frame_rate_counter/ros_sub.cpp)
 add_executable(zenoh_sub src/frame_rate_counter/zenoh_sub.cpp)
 
-# zenohc dependency
-find_path(ZENOHC_INCLUDE_DIRS zenohc/zenoh.h)
-include_directories(${ZENOHC_INCLUDE_DIRS})
-find_library(ZENOHC_LIBRARY zenohc)
-target_link_libraries(zenoh_pub ${ZENOHC_LIBRARY})
-target_link_libraries(zenoh_sub ${ZENOHC_LIBRARY})
+target_link_libraries(zenoh_sub zenohc::lib zenohcpp)
+target_link_libraries(zenoh_pub zenohc::lib zenohcpp)
 
 ament_target_dependencies(ros_pub rclcpp sensor_msgs)
 ament_target_dependencies(ros_sub rclcpp sensor_msgs)
 ament_target_dependencies(zenoh_pub rclcpp sensor_msgs)
 ament_target_dependencies(zenoh_sub rclcpp sensor_msgs)
-target_compile_features(ros_pub PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-target_compile_features(ros_sub PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-target_compile_features(zenoh_pub PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-target_compile_features(zenoh_sub PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-
-# target_include_directories(ros_pub
-#   PUBLIC
-#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#   $<INSTALL_INTERFACE:include>
-# )
-
 
 install(TARGETS ros_sub ros_pub zenoh_pub zenoh_sub
   DESTINATION lib/${PROJECT_NAME})

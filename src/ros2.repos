@@ -5,8 +5,8 @@ repositories:
     version: ros2
   diagnostics:
     type: git
-    url: https://github.com/YuanYuYuan/diagnostics.git
-    version: fix-package-format
+    url: https://github.com/ros/diagnostics.git
+    version: humble
   velodyne:
     type: git
     url: https://github.com/ros-drivers/velodyne
@@ -14,4 +14,12 @@ repositories:
   zenoh-c:
     type: git
     url: https://github.com/eclipse-zenoh/zenoh-c
+    version: master
+  zenoh-cpp:
+    type: git
+    url: https://github.com/YuanYuYuan/zenoh-cpp
+    version: main
+  zenoh-plugin-dds:
+    type: git
+    url: https://github.com/eclipse-zenoh/zenoh-plugin-dds
     version: master

@@ -3,7 +3,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <rclcpp/serialization.hpp>
-#include <zenohc/zenoh.h>
+#include "zenohcpp.h"
 #include <chrono>
 #include <thread>
 
@@ -26,28 +26,18 @@ public:
         // this->pub = this->create_publisher<PC2>(pub_topic, 10);
 
         // open zenoh session
-        z_owned_config_t config = z_config_default();
-        session = z_open(z_move(config));
-        if (!z_check(session)) {
-            printf("Unable to open session!\n");
-            exit(-1);
-        }
+        zenoh::Config config;
+        this->session = std::make_unique<zenoh::Session>(std::get<zenoh::Session>(zenoh::open(std::move(config))));
 
         // declare zenoh sub
-        z_owned_closure_sample_t callback = z_closure(data_handler, NULL, this);
-        z_subscriber_options_t opts = z_subscriber_options_default();
-        opts.reliability = Z_RELIABILITY_RELIABLE;
-        this->sub = z_declare_subscriber(
-            z_loan(session),
-            z_keyexpr(sub_topic.c_str()),
-            z_move(callback),
-            &opts
-        );
-
-        if (!z_check(sub)) {
-            printf("Unable to declare Subscriber for key expression!\n");
-            exit(-1);
-        }
+        zenoh::SubscriberOptions options;
+        options.reliability = zenoh::Reliability::Z_RELIABILITY_RELIABLE;
+        auto subscriber = std::get<zenoh::Subscriber>(this->session->declare_subscriber(
+            sub_topic.c_str(),
+            std::bind(&Counter::callback, this, std::placeholders::_1),
+            options
+        ));
+        this->sub = std::make_unique<zenoh::Subscriber>(std::move(subscriber));
     }
 
     void print_stat(uint64_t elapsed) {
@@ -61,12 +51,11 @@ public:
 private:
     // rclcpp::Publisher<PC2>::SharedPtr pub;
     std::atomic<uint64_t> recv;
-    z_owned_session_t session;
-    z_owned_subscriber_t sub;
+    std::unique_ptr<zenoh::Session> session;
+    std::unique_ptr<zenoh::Subscriber> sub;
 
-    static void data_handler(const z_sample_t* sample, void* counter_ptr) {
-        Counter* counter = static_cast<Counter*>(counter_ptr);
-        counter->recv++;
+    void callback(const z_sample_t* sample) {
+        this->recv++;
 
         // manually create a serialized_msg from the zenoh payload
         rmw_serialized_message_t serialized_msg = rcutils_get_zero_initialized_uint8_array();
