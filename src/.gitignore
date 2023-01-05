@@ -3,3 +3,4 @@ angles/
 diagnostics/
 zenoh-c/
 zenoh-cpp/
+zenoh-plugin-dds/

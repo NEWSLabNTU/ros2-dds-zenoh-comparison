@@ -18,17 +18,17 @@ public:
 
         // open zenoh session
         zenoh::Config config;
-        session = std::make_unique<zenoh::Session>(std::get<zenoh::Session>(zenoh::open(std::move(config))));
+        this->session = std::make_unique<zenoh::Session>(std::get<zenoh::Session>(zenoh::open(std::move(config))));
 
         // zenoh pub
         zenoh::PublisherOptions options;
         options.set_congestion_control(zenoh::CongestionControl::Z_CONGESTION_CONTROL_BLOCK);
-        auto publisher = std::get<zenoh::Publisher>(session->declare_publisher(pub_topic.c_str(), options));
-        pub = std::make_unique<zenoh::Publisher>(std::move(publisher));
+        auto publisher = std::get<zenoh::Publisher>(this->session->declare_publisher(pub_topic.c_str(), options));
+        this->pub = std::make_unique<zenoh::Publisher>(std::move(publisher));
 
         // ros sub with zenoh pub as callback
         auto qos = rclcpp::QoS(rclcpp::KeepAll()).reliable();
-        sub = this->create_subscription<PC2>(sub_topic, qos, std::bind(&Transfer::callback, this, std::placeholders::_1));
+        this->sub = this->create_subscription<PC2>(sub_topic, qos, std::bind(&Transfer::callback, this, std::placeholders::_1));
     }
 
 private:
