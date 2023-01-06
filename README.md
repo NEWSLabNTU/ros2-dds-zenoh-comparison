@@ -129,6 +129,3 @@ Visualize the results
 ```bash
 python ./scripts/plot.py
 ```
-
-
-![](./pic/compare-P1-P2.png)
