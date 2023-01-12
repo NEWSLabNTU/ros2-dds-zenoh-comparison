@@ -48,6 +48,8 @@ namespace transfer {
 
             // publish the serialized_msg
             this->pub->publish(serialized_msg);
+
+            // // Automatically serialized
             // pub->publish(*msg);
         }
 

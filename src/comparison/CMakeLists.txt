@@ -24,10 +24,12 @@ ament_target_dependencies(${PROJECT_NAME}_lib INTERFACE rclcpp sensor_msgs)
 # link libraries for all targets below
 link_libraries(${PROJECT_NAME}_lib)
 
-add_executable(ros_pub   src/transfer/ros_pub.cpp)
-add_executable(zenoh_pub src/transfer/zenoh_pub.cpp)
-add_executable(ros_sub   src/frame_rate_counter/ros_sub.cpp)
-add_executable(zenoh_sub src/frame_rate_counter/zenoh_sub.cpp)
+add_executable(ros_pub       src/transfer/ros_pub.cpp)
+add_executable(zenoh_pub     src/transfer/zenoh_pub.cpp)
+add_executable(ros_sub       src/frame_rate_counter/ros_sub.cpp)
+add_executable(zenoh_sub     src/frame_rate_counter/zenoh_sub.cpp)
+add_executable(ros_pcd_gen   src/pcd_generator/ros_pcd_gen.cpp)
+add_executable(zenoh_pcd_gen src/pcd_generator/zenoh_pcd_gen.cpp)
 
 install(
   TARGETS
@@ -35,6 +37,8 @@ install(
     zenoh_pub
     ros_sub
     zenoh_sub
+    ros_pcd_gen
+    zenoh_pcd_gen
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch config
