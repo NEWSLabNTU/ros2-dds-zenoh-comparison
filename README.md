@@ -147,6 +147,10 @@ where `Data Generator` is used to simulate some large intermedidate data with ad
 
 4. Results
 
+* Payload size: 4 KiB to 4 MiB
+* Number of data generating nodes: 1, 3, 5, ..., 19
+* Data generating speed: 200 Hz per node
+
 |                                         |                                          |
 | -                                       | -                                        |
 | ![NAME](./pic/results/P1-P2-4-KiB.png)  | ![NAME](./pic/results/P1-P2-16-KiB.png)  |
