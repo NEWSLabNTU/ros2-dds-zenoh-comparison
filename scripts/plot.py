@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import argparse
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -18,6 +19,11 @@ parser.add_argument(
     '--title',
     default='FPS comparison between P1 and P2',
     help='Direcotry containing logs.'
+)
+parser.add_argument(
+    '--out',
+    default=None,
+    help='Direcotry storing the plots'
 )
 args = parser.parse_args()
 
@@ -53,9 +59,16 @@ fig = px.line(
     color='protocol',
     title=args.title,
     labels={
-        'num': 'Number of cloned transfer nodes',
+        'num': 'Number of nodes',
         'mean': 'FPS',
         'protocol': 'Protocol',
     }
 )
-fig.show()
+
+if args.out:
+    os.makedirs(args.out, exist_ok=True)
+    file = f'{args.out}/{args.title}.png'
+    fig.write_image(file)
+    print(f'Plot had been stored as {file}')
+else:
+    fig.show()

@@ -12,7 +12,7 @@ subgraph SR[LiDAR Source]
     VP(velodyne_pointcloud)
     VL --> VD --> VP
 end
-VP --> TF
+VP -- P0 --> TF
 subgraph TF[Transfer]
     direction LR
     RP(ROS2 publisher)
@@ -40,6 +40,7 @@ A{{ROS2 msg}} -- DDS --> B(Zenoh Bridge DDS) -- Zenoh --> C{{Zenoh msg}}
 
 There're four pathways to transfer the raw LiDAR packets to the endpoint Frame rate counter.
 
+* P0: Raw LiDAR packet from the physical LiDAR sensor
 * P1: the default way used in ROS2, passing messages with DDS
 * P2: replacing the last message passing by pure zenoh protocol
 * P3: using two Zenoh/DDS bridges to cross the local network
@@ -104,28 +105,50 @@ ln -s ./build/compile_commands.json .
 
 ## Experiments
 
-For autonomous vehicles driving on the road, there is one case of single LiDAR source followed
+### P1 vs P2: Comparison between Zenoh and ROS2/DDS
+
+1. For autonomous vehicles driving on the road, there is one case of single LiDAR source followed
 by multiple perception and then gather into the planning node to make decision.
+    ```mermaid
+    flowchart LR
+    SR[LiDAR Sensor]
+    P1[Perception Model 1]
+    P2[Perception Model 2]
+    PN[Perception Model N]
+    PL[Planning Node]
+    SR ---> P1 --> PL
+    SR ---> P2 --> PL
+    SR ---> PN --> PL
+    ```
+2. To simulate this use case and to make a fair comparison between Zenoh and ROS2/DDS (CycloneDDS used here). We use the following workflow,
+    ```mermaid
+    flowchart LR
+    P1[Data Generator 1]
+    P2[Data Generator 2]
+    PN[Data Generator N]
+    PL[Frame rate counter]
+    P1 -- Zenoh or DDS--> PL
+    P2 -- Zenoh or DDS--> PL
+    PN -- Zenoh or DDS--> PL
+    ```
+where `Data Generator` is used to simulate some large intermedidate data with adjustable payload size in practice.
 
-```mermaid
-flowchart LR
-SR[LiDAR Sensor]
-P1[Perception Model 1]
-P2[Perception Model 2]
-PN[Perception Model N]
-PL[Planning Node]
-SR ---> P1 --> PL
-SR ---> P2 --> PL
-SR ---> PN --> PL
-```
 
-We can simulate this case by duplicating the middle **Transfer** node.
-The following script can be used to compare the performance between the paths P1 and P2.
-```bash
-./scripts/compare.sh
-```
+3. The following script can be used to compare the performance between the paths P1 and P2.
+    ```bash
+    ./scripts/compare-pcd-gen.sh
+    ```
 
-Visualize the results
-```bash
-python ./scripts/plot.py
-```
+    Visualize the results, e.g.
+
+    ```bash
+    ./scripts/plot.py --log ./logs/20230112.102116/65536 --title "P1 vs P2, payload: 64 KiB"
+    ```
+
+4. Results
+
+|                                         |                                          |
+| -                                       | -                                        |
+| ![NAME](./pic/results/P1-P2-4-KiB.png)  | ![NAME](./pic/results/P1-P2-16-KiB.png)  |
+| ![NAME](./pic/results/P1-P2-64-KiB.png) | ![NAME](./pic/results/P1-P2-256-KiB.png) |
+| ![NAME](./pic/results/P1-P2-1-MiB.png)  | ![NAME](./pic/results/P1-P2-4-MiB.png)   |
