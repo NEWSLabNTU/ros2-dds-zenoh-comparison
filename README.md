@@ -39,7 +39,7 @@ endpoint Frame rate counter.
 * P3: using two Zenoh/DDS bridges to cross the local network
 * P4: directly using the zenoh message after Zenoh/DDS bridge
 
-In the NTU/NYCU project, the path **P2** is used.
+In the NTU/NYCU project, the path **P3** is used.
 
 ## Prerequisites
 
@@ -71,11 +71,13 @@ vcs import --input src/ros2.repos src
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
 
-## Run this Demo
+## Run the Demo
 
 Prepare two laptops with this project built within. One connects the
 the LiDAR and works as a publisher. The other works as a subscriber
-receiving the point cloud messages. Both are in a local network.
+receiving the point cloud messages. Both are in a local network. You
+can watch the demo walkthrough in the video
+[here](pic/demo-walkthrough.mp4).
 
 Whenever you start a new shell, always activate the environment for
 this project.
@@ -130,3 +132,10 @@ Start the Zenoh/DDS bridge to forward ROS messages to the Zenoh network.
 ```bash
 zenoh-bridge-dds
 ```
+
+### Check the Result
+
+If the execution is successful, `ros_sub` emits the frame rate on the
+terminal.
+
+![](pic/ros_pub_example.png)
