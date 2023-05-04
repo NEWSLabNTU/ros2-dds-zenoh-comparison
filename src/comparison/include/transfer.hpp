@@ -4,7 +4,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <rclcpp/serialization.hpp>
-#include "zenohcpp.h"
 
 
 namespace transfer {
@@ -54,40 +53,6 @@ namespace transfer {
         }
 
     };
-
-    class ZenohTransfer : public BaseTransfer {
-    public:
-        ZenohTransfer() : BaseTransfer("zenoh_pub") {
-            // open zenoh session
-            zenoh::Config config;
-            this->session = std::make_unique<zenoh::Session>(std::get<zenoh::Session>(zenoh::open(std::move(config))));
-
-            // zenoh pub
-            zenoh::PublisherOptions options;
-            options.set_congestion_control(zenoh::CongestionControl::Z_CONGESTION_CONTROL_BLOCK);
-            auto publisher = std::get<zenoh::Publisher>(this->session->declare_publisher(pub_topic.c_str(), options));
-            this->pub = std::make_unique<zenoh::Publisher>(std::move(publisher));
-        }
-
-    private:
-        std::unique_ptr<zenoh::Session> session;
-        std::unique_ptr<zenoh::Publisher> pub;
-
-        void callback(const PC2::UniquePtr msg) const {
-            // serialize message
-            auto message_payload_length = static_cast<size_t>(msg->data.size());
-            rclcpp::SerializedMessage serialized_msg;
-            serialized_msg.reserve(this->message_header_length + message_payload_length);
-            this->serializer.serialize_message(msg.get(), &serialized_msg);
-
-            // zenoh put message
-            auto inner_msg = serialized_msg.get_rcl_serialized_message();
-            auto payload = zenoh::BytesView(inner_msg.buffer, inner_msg.buffer_length);
-            pub->put(payload);
-        }
-
-    };
-
 }
 
 #endif

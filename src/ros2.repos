@@ -6,20 +6,8 @@ repositories:
   diagnostics:
     type: git
     url: https://github.com/ros/diagnostics.git
-    version: humble
+    version: galactic
   velodyne:
     type: git
     url: https://github.com/ros-drivers/velodyne
     version: ros2
-  zenoh-c:
-    type: git
-    url: https://github.com/eclipse-zenoh/zenoh-c
-    version: master
-  zenoh-cpp:
-    type: git
-    url: https://github.com/YuanYuYuan/zenoh-cpp
-    version: main
-  zenoh-plugin-dds:
-    type: git
-    url: https://github.com/eclipse-zenoh/zenoh-plugin-dds
-    version: master

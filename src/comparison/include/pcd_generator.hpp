@@ -4,7 +4,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <rclcpp/serialization.hpp>
-#include "zenohcpp.h"
 #include <chrono>
 
 
@@ -67,40 +66,6 @@ namespace pcd_generator {
         }
 
     };
-
-    class ZenohPcdGenerator : public BasePcdGenerator {
-    public:
-        ZenohPcdGenerator() : BasePcdGenerator("zenoh_pcd_gen") {
-            // open zenoh session
-            zenoh::Config config;
-            this->session = std::make_unique<zenoh::Session>(std::get<zenoh::Session>(zenoh::open(std::move(config))));
-
-            // zenoh pub
-            zenoh::PublisherOptions options;
-            options.set_congestion_control(zenoh::CongestionControl::Z_CONGESTION_CONTROL_BLOCK);
-            auto publisher = std::get<zenoh::Publisher>(this->session->declare_publisher(pub_topic.c_str(), options));
-            this->pub = std::make_unique<zenoh::Publisher>(std::move(publisher));
-        }
-
-    private:
-        std::unique_ptr<zenoh::Session> session;
-        std::unique_ptr<zenoh::Publisher> pub;
-
-        void send_dummy_data() const {
-            // serialize message
-            auto message_payload_length = static_cast<size_t>(this->dummy_msg->data.size());
-            rclcpp::SerializedMessage serialized_msg;
-            serialized_msg.reserve(this->message_header_length + message_payload_length);
-            this->serializer.serialize_message(this->dummy_msg.get(), &serialized_msg);
-
-            // zenoh put message
-            auto inner_msg = serialized_msg.get_rcl_serialized_message();
-            auto payload = zenoh::BytesView(inner_msg.buffer, inner_msg.buffer_length);
-            pub->put(payload);
-        }
-
-    };
-
 }
 
 #endif
