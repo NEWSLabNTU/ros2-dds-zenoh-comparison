@@ -34,7 +34,7 @@ namespace pcd_generator {
         }
         std::shared_ptr<PC2> dummy_msg;
         rclcpp::Serialization<PC2> serializer;
-        rclcpp::QoS qos = rclcpp::QoS(rclcpp::KeepAll()).reliable();
+        rclcpp::QoS qos = rclcpp::QoS(rclcpp::KeepAll()).best_effort();
         std::string pub_topic;
         int interval_ms;
         int payload_size;

@@ -46,7 +46,7 @@ namespace counter {
         RosCounter() : BaseCounter("ros_sub") {
             this->sub = this->create_subscription<PC2>(
                 this->sub_topic,
-                rclcpp::QoS(rclcpp::KeepAll()).reliable(),
+                rclcpp::QoS(rclcpp::KeepAll()).best_effort(),
                 std::bind(&RosCounter::callback, this, std::placeholders::_1)
             );
         }

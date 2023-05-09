@@ -23,7 +23,7 @@ namespace transfer {
 
         rclcpp::Subscription<PC2>::SharedPtr sub;
         rclcpp::Serialization<PC2> serializer;
-        rclcpp::QoS qos = rclcpp::QoS(rclcpp::KeepAll()).reliable();
+        rclcpp::QoS qos = rclcpp::QoS(rclcpp::KeepAll()).best_effort();
         std::string sub_topic, pub_topic;
         uint8_t message_header_length = 8u;
         virtual void callback(const PC2::UniquePtr) const {};
