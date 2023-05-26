@@ -11,6 +11,7 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "${script_dir}/.."
 
 source install/setup.bash
+export CYCLONEDDS_URI="file://${script_dir}/../cyclonedds.pub.xml"
 mkdir "$name"
 
 parallel -j0 --lb --timeout 20 <<EOF
