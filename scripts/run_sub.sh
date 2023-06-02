@@ -13,10 +13,11 @@ cd "${script_dir}/.."
 export CYCLONEDDS_URI="file://$script_dir/../cyclonedds.sub.xml"
 
 source install/setup.bash
-mkdir "$name"
+mkdir -p data
+mkdir "data/$name"
 
 parallel -j0 --lb --timeout 20 <<EOF
 ros2 run comparison ros_sub
-cd $name && ros2 bag record --all
-cd $name && tshark -i enp9s0 -w packets.pcap
+cd data/$name && ros2 bag record --no-discovery --qos-profile-overrides-path ../../qos_override.yaml /transfer_topic
+cd data/$name && tshark -i enp9s0 -w packets.pcap
 EOF

@@ -1,0 +1,5 @@
+/transfer_topic:
+  history: keep_last
+  depth: 1
+  reliability: best_effort
+  durability: volatile
