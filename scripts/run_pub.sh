@@ -15,10 +15,10 @@ export CYCLONEDDS_URI="file://${script_dir}/../cyclonedds.pub.xml"
 mkdir -p data
 mkdir "data/$name"
 
-parallel -j0 --lb --timeout 20 <<EOF
+parallel -j0 --lb --halt-on-error now,fail=1 --timeout 20 <<EOF
 ros2 launch velodyne_driver velodyne_driver_node-VLP32C-launch.py
 ros2 launch velodyne_pointcloud velodyne_transform_node-VLP32C-launch.py
 ros2 run comparison ros_pub
-sleep 2 && cd data/$name && ros2 bag record --no-discovery --qos-profile-overrides-path ../../qos_override.yaml /transfer_topic
-cd data/$name && tshark -i wlp4s0 -w packets.pcap
+sleep 2 && cd data/$name && ros2 bag record --qos-profile-overrides-path ../../qos_override.yaml /transfer_topic
+cd data/$name && tshark -i enp9s0 -w packets.pcap
 EOF
