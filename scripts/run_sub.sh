@@ -18,6 +18,6 @@ mkdir "data/$name"
 
 parallel -j0 --lb --timeout 20 <<EOF
 ros2 run comparison ros_sub
-cd data/$name && ros2 bag record --no-discovery --qos-profile-overrides-path ../../qos_override.yaml /transfer_topic
+sleep 2 && cd data/$name && ros2 bag record --no-discovery --qos-profile-overrides-path ../../qos_override.yaml /transfer_topic
 cd data/$name && tshark -i enp9s0 -w packets.pcap
 EOF
